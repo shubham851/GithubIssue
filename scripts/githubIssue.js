@@ -167,7 +167,7 @@ app.controller('MyCtrl1', ['$scope', 'callApi', function (scope, callApi) {
     };
 	
 	scope.getDataFromUrl = function(){
-		scope.init();
+		
 		var rowUrl = scope.searchText;
 		words = rowUrl.split('/') 
 
@@ -175,7 +175,7 @@ app.controller('MyCtrl1', ['$scope', 'callApi', function (scope, callApi) {
 		if(words[0] == "https:" && words[1] == "" && words[2] == "github.com" && words[3] != "" && words[4] != ""){
    		scope.myData.user = words[3];
 		scope.myData.repo = words[4];
-		
+		scope.init();
 		scope.setIssueList();		
 		}
    	else{
