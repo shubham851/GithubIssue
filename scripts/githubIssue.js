@@ -1,4 +1,5 @@
 var app = angular.module('myApp', ['angularMoment']);
+//this service will be used for getting the data through get method.
 app.factory('callApi', ['$http', '$log',
 function($http, $log) {
 
@@ -8,9 +9,9 @@ function($http, $log) {
 				method : "get",
 				url : url,
 			}).error(function(){
-				console.log("error");
+				console.log("error in fetching data");
 			});
-			//  return $http.post(url,config);
+			
 		}
 	}
 }])
@@ -50,38 +51,26 @@ app.controller('MyCtrl1', ['$scope', 'callApi', function (scope, callApi) {
 		
 		
 	
-	//	https://api.github.com/repos/Shippable/support/issues?direction=desc&sort=created&state=open&created:>2016-08-12&created:<2016-08-06
-		
-		//var url = "https://api.github.com/repos/" + scope.myData.user + "/"+scope.myData.repo+"/issues?direction="+scope.myData.issueListDirection+"&sort="+scope.myData.issueListSort+"&state="+scope.myData.issueListState;
-		
 		var pageCount = 0;
 		var curr_url = url + "&page="+pageCount+"&per_page=100";
 		var infoUrl = "https://api.github.com/repos/"+scope.myData.user+"/"+scope.myData.repo;
 		callApi.call(curr_url,"").then(function successCallback(response) {
 			scope.myData.openIssueCount = response.open_issues_count;
 		});
-		/*callApi.call(curr_url,"").then(function successCallback(response) {
-			scope.myData.issueList = scope.myData.issueList.concat(response.data);
-			scope.myData.perm = scope.myData.issueList;
-			
-			console.log(scope.myData.issueList.length);
-			
-		}, function errorCallback(response) {
-			
-		});*/
+		
 		
 		
 		while(pageCount <= 10){
 			if(scope.myData.openIssueCount != 0 && scope.myData.openIssueCount <=scope.myData.issueList.length)
 				break;
-			console.log(scope.myData.openIssueCount);
+			
 			pageCount += 1;
 			curr_url = url + "&page="+pageCount+"&per_page=100";
 			callApi.call(curr_url,"").then(function successCallback(response) {
 			
 			scope.myData.issueList = scope.myData.issueList.concat(response.data);
 			scope.myData.perm = scope.myData.issueList;
-			console.log(scope.myData.issueList.length);
+			
 			
 			
 		}, function errorCallback(response) {
@@ -91,7 +80,7 @@ app.controller('MyCtrl1', ['$scope', 'callApi', function (scope, callApi) {
 		
 		
     };
-	
+	//it will populate the data according to chosen interval
 	scope.setInterval = function(){
 	
 	var TotalIssues_lessThan24hours = moment().subtract(24, "hours").format('YYYY-MM-DDTHH:MM:SSZ');
@@ -165,9 +154,9 @@ app.controller('MyCtrl1', ['$scope', 'callApi', function (scope, callApi) {
     scope.showAll = function () {
         scope.myData.currentIssue = null;
     };
-	
+	//This function will get the username and repo name from the given url
 	scope.getDataFromUrl = function(){
-		
+		scope.init();
 		var rowUrl = scope.searchText;
 		words = rowUrl.split('/') 
 
@@ -175,7 +164,7 @@ app.controller('MyCtrl1', ['$scope', 'callApi', function (scope, callApi) {
 		if(words[0] == "https:" && words[1] == "" && words[2] == "github.com" && words[3] != "" && words[4] != ""){
    		scope.myData.user = words[3];
 		scope.myData.repo = words[4];
-		scope.init();
+		
 		scope.setIssueList();		
 		}
    	else{
